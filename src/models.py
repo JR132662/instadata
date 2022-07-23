@@ -8,23 +8,34 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    username = Column(String(16), unique =True, nullable=False)
+    password = Column(Text,nullable=False)
+    email = Column(String (16), unique=True, nullable=False)
+    first_name = Column(String(255), nullable=false)
+    last_name = Column(String(255), nullable=false)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Followers(Base):
+    __tablename__ = 'followers'
+    user = relationship('User')
+    user_from_id = Column(integer, ForeignKey('user.id'), nullable=True)
+    user_to_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+
+class Post(base):
+    __tablename__ = "media"
+    id = Column(Integer, primary_key=true)
+    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+
+class Media(base):
+    __tablename__ = "media"
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    mediatype = Column(Enum)
+    url = Column(String)
+    post = relationship(Post)
+    post_id = Column(Integer, ForeignKey('post.id'), nullable=True)
 
     def to_dict(self):
         return {}
